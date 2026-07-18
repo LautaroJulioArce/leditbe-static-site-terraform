@@ -3,5 +3,5 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "website" {
-  bucket = "cuadros-led-terraform-lauta-2026"
+  bucket = "landing-page-cuadros-led-lautaro"
 }
