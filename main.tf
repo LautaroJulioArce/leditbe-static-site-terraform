@@ -18,7 +18,7 @@ resource "aws_s3_bucket" "website" {
 
 
 # Mantiene el bucket privado y bloquea el acceso público no autorizado.
-# Más adelante se creará un OAC (Origin Access Control) para permitir que CloudFront acceda al bucket de forma segura.
+# Más adelante en el codigo se creará un OAC (Origin Access Control) para permitir que CloudFront acceda al bucket de forma segura.
 # ACL significa Access Control List.
 
 resource "aws_s3_bucket_public_access_block" "website" {
@@ -63,7 +63,9 @@ resource "aws_cloudfront_distribution" "website" {
   is_ipv6_enabled     = true
   comment             = "Landing Page LED IT BE"
   default_root_object = "index.html"
-#getscm-history-item:c%3A%5CUsers%5CLauta%5CDesktop%5Cleditbe-aws-terraform?%7B%22repositoryId%22%3A%22scm0%22%2C%22historyItemId%22%3A%22361151459f410b21b6de2d274a14c74cb807ed28%22%2C%22historyItemParentId%22%3A%227c482fad21610a7c0a6384a87865fccf6b586bbf%22%2C%22historyItemDisplayId%22%3A%223611514%22%7D y head son los métodos HTTP que se permiten para acceder al contenido de la distribución de CloudFront.
+
+# GET y HEAD son los métodos HTTP permitidos para consultar el contenido.
+
   default_cache_behavior {
     allowed_methods        = ["GET", "HEAD"]
     cached_methods         = ["GET", "HEAD"]
@@ -84,4 +86,34 @@ resource "aws_cloudfront_distribution" "website" {
   viewer_certificate {
     cloudfront_default_certificate = true
   }
+}
+
+
+# Permite que solamente esta distribución de CloudFront lea los archivos del bucket S3 privado.
+resource "aws_s3_bucket_policy" "allow_cloudfront" {
+  bucket = aws_s3_bucket.website.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+
+    Statement = [
+      {
+        Sid    = "AllowCloudFrontReadAccess"
+        Effect = "Allow"
+
+        Principal = {
+          Service = "cloudfront.amazonaws.com"
+        }
+
+        Action   = "s3:GetObject"
+        Resource = "${aws_s3_bucket.website.arn}/*"
+
+        Condition = {
+          StringEquals = {
+            "AWS:SourceArn" = aws_cloudfront_distribution.website.arn
+          }
+        }
+      }
+    ]
+  })
 }
