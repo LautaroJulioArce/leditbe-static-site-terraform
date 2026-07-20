@@ -18,7 +18,7 @@ resource "aws_s3_bucket" "website" {
 
 
 # Mantiene el bucket privado y bloquea el acceso público no autorizado.
-# Más adelante en el codigo se creará un OAC (Origin Access Control) para permitir que CloudFront acceda al bucket de forma segura.
+# Más adelante en elcodigo se creará un OAC (Origin Access Control) para permitir que CloudFront acceda al bucket de forma segura.
 # ACL significa Access Control List.
 
 resource "aws_s3_bucket_public_access_block" "website" {
@@ -64,7 +64,7 @@ resource "aws_cloudfront_distribution" "website" {
   comment             = "Landing Page LED IT BE"
   default_root_object = "index.html"
 
-# GET y HEAD son los métodos HTTP permitidos para consultar el contenido.
+  # GET y HEAD son los métodos HTTP permitidos para consultar el contenido.
 
   default_cache_behavior {
     allowed_methods        = ["GET", "HEAD"]
@@ -116,4 +116,9 @@ resource "aws_s3_bucket_policy" "allow_cloudfront" {
       }
     ]
   })
+}
+
+# Muestra la URL pública de la landing generada por CloudFront.
+output "cloudfront_url" {
+  value = "https://${aws_cloudfront_distribution.website.domain_name}"
 }
