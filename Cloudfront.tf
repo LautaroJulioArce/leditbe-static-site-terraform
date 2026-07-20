@@ -1,37 +1,3 @@
-provider "aws" {
-  region = "us-east-1"
-}
-
-resource "aws_s3_bucket" "website" {
-  bucket = "landing-page-cuadros-led-lautaro"
-
-  tags = {
-    Name        = "Landing Page LED IT BE"
-    Environment = "dev"
-    Project     = "leditbe-terraform"
-    ManagedBy   = "Terraform"
-    Owner       = "Lautaro"
-    Purpose     = "Static website"
-  }
-
-}
-
-
-# Mantiene el bucket privado y bloquea el acceso público no autorizado.
-# Más adelante en elcodigo se creará un OAC (Origin Access Control) para permitir que CloudFront acceda al bucket de forma segura.
-# ACL significa Access Control List.
-
-resource "aws_s3_bucket_public_access_block" "website" {
-  bucket = aws_s3_bucket.website.id
-
-  block_public_acls       = true
-  ignore_public_acls      = true
-  block_public_policy     = true
-  restrict_public_buckets = true
-}
-
-
-
 # Crea un OAC (Origin Access Control) para que CloudFront pueda acceder de forma segura al bucket S3 privado.
 # Las solicitudes de CloudFront se firman utilizando AWS Signature Version 4 (SigV4).
 
@@ -86,39 +52,4 @@ resource "aws_cloudfront_distribution" "website" {
   viewer_certificate {
     cloudfront_default_certificate = true
   }
-}
-
-
-# Permite que solamente esta distribución de CloudFront lea los archivos del bucket S3 privado.
-resource "aws_s3_bucket_policy" "allow_cloudfront" {
-  bucket = aws_s3_bucket.website.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-
-    Statement = [
-      {
-        Sid    = "AllowCloudFrontReadAccess"
-        Effect = "Allow"
-
-        Principal = {
-          Service = "cloudfront.amazonaws.com"
-        }
-
-        Action   = "s3:GetObject"
-        Resource = "${aws_s3_bucket.website.arn}/*"
-
-        Condition = {
-          StringEquals = {
-            "AWS:SourceArn" = aws_cloudfront_distribution.website.arn
-          }
-        }
-      }
-    ]
-  })
-}
-
-# Muestra la URL pública de la landing generada por CloudFront.
-output "cloudfront_url" {
-  value = "https://${aws_cloudfront_distribution.website.domain_name}"
 }
