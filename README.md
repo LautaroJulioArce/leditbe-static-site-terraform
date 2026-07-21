@@ -63,3 +63,11 @@ terraform output -raw cloudfront_url
 - Separar la configuración en varios archivos `.tf`.
 - Incorporar variables.
 - Automatizar validaciones y despliegues con GitHub Actions.
+
+## 🎨 Aplicación frontend
+
+La landing page desplegada con esta infraestructura se encuentra en un repositorio separado:
+
+[Ver repositorio del frontend](https://github.com/LautaroJulioArce/leditbe-cuadros-web)
+
+[Ver sitio en producción](https://dpinkajnni387.cloudfront.net)
