@@ -30,6 +30,7 @@ Bucket S3 privado
 - Redirección de HTTP a HTTPS.
 - Caché optimizada para contenido estático.
 - Infraestructura organizada en distintos archivos `.tf`.
+- Configuración parametrizada mediante `variables.tf` y `terraform.tfvars`.
 
 ## Sitio desplegado
 
@@ -71,6 +72,14 @@ aws cloudfront create-invalidation `
   --paths "/*"
 ```
 
+## Variables
+
+Los valores configurables se definen en `terraform.tfvars`:
+
+- Región de AWS.
+- Nombre del bucket S3.
+- Tags comunes del proyecto.
+
 ## Comandos principales
 
 ```powershell
@@ -89,7 +98,6 @@ terraform output -raw cloudfront_url
 
 ## Próximos pasos
 
-- Incorporar variables de Terraform.
 - Configurar un dominio personalizado.
 - Automatizar validaciones y despliegues con GitHub Actions.
 
