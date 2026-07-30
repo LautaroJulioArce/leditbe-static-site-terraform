@@ -30,6 +30,21 @@ resource "aws_cloudfront_distribution" "website" {
   comment             = "Landing Page LED IT BE"
   default_root_object = "index.html"
 
+  # Devuelve el punto de entrada de la SPA para rutas internas que no existen como objetos en S3.
+  custom_error_response {
+    error_caching_min_ttl = 0
+    error_code            = 403
+    response_code         = 200
+    response_page_path    = "/index.html"
+  }
+
+  custom_error_response {
+    error_caching_min_ttl = 0
+    error_code            = 404
+    response_code         = 200
+    response_page_path    = "/index.html"
+  }
+
   # GET y HEAD son los métodos HTTP permitidos para consultar el contenido.
 
   default_cache_behavior {

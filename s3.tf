@@ -1,14 +1,9 @@
 resource "aws_s3_bucket" "website" {
-  bucket = "landing-page-cuadros-led-lautaro"
+  bucket = var.bucket_name
 
-  tags = {
-    Name        = "Landing Page LED IT BE"
-    Environment = "dev"
-    Project     = "leditbe-terraform"
-    ManagedBy   = "Terraform"
-    Owner       = "Lautaro"
-    Purpose     = "Static website"
-  }
+  tags = merge(var.common_tags, {
+    Name = "Landing Page LED IT BE"
+  })
 
 }
 
