@@ -20,6 +20,7 @@ Bucket S3 privado
 - Origin Access Control (OAC)
 - AWS CLI
 - Git y GitHub
+- GitHub Actions
 
 ## Características
 
@@ -31,6 +32,7 @@ Bucket S3 privado
 - Caché optimizada para contenido estático.
 - Infraestructura organizada en distintos archivos `.tf`.
 - Configuración parametrizada mediante `variables.tf` y `terraform.tfvars`.
+- Validación automática de Terraform mediante GitHub Actions.
 
 ## Sitio desplegado
 
@@ -95,11 +97,21 @@ Para consultar la URL de CloudFront:
 ```powershell
 terraform output -raw cloudfront_url
 ```
+## Integración continua
+
+El repositorio incluye un workflow de GitHub Actions que se ejecuta con cada `push` o pull request hacia la rama `main`.
+
+El pipeline realiza las siguientes validaciones:
+
+- `terraform fmt -check`
+- `terraform init -backend=false`
+- `terraform validate`
+
+El despliegue de la infraestructura mediante `terraform apply` se mantiene manual.
 
 ## Próximos pasos
 
 - Configurar un dominio personalizado.
-- Automatizar validaciones y despliegues con GitHub Actions.
 
 ## 🎨 Aplicación frontend
 
